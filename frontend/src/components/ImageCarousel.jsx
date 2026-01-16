@@ -105,28 +105,6 @@ export default function ImageCarousel({
       </div>
 
       {/* thumbnails */}
-      <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-        {list.map((src, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className={`relative flex-shrink-0 w-24 h-16 rounded-md overflow-hidden border ${
-              i === idx ? "border-blue-600" : "border-transparent"
-            }`}
-            aria-label={`thumb-${i}`}
-          >
-            <img
-              src={src}
-              alt={`thumb-${i}`}
-              className="w-full h-full object-cover"
-              draggable={false}
-            />
-            {i === idx && (
-              <span className="absolute inset-0 ring-2 ring-blue-600 rounded-md pointer-events-none" />
-            )}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
