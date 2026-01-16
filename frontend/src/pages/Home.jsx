@@ -85,10 +85,6 @@ export default function Home() {
                       </p>
                     </div>
                   </div>
-
-                  <button className="mt-6 w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 transition text-white font-semibold py-3">
-                    Xem chi tiết chương trình
-                  </button>
                 </div>
               </div>
             </div>
