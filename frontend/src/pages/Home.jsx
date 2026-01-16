@@ -1,285 +1,221 @@
-import { useNavigate } from "react-router-dom"
-import TourSearchBar from "../components/pages/tours/TourSearchBar"
-import { useState } from "react"
-import { useAuth } from "@/context/useAuth"
-import { ArrowRight, MapPin, Users, Award, Star, Quote, Globe, Camera, Umbrella, Coffee, Zap } from "lucide-react"
-import { FeaturedTours } from "@/components/featured-tours"
+import ImageCarousel from "@/components/ImageCarousel";
+import { Footer } from "../components/layout/Footer";
+import Header from "@/components/layout/Header";
 
 export default function Home() {
-  const navigate = useNavigate()
-  const { user } = useAuth()
+  const galleryImages = [
+    "/images/kk1.jpg",
+    "/images/kk2.jpg",
+    "/images/kk3.jpg",
+    "/images/kk4.jpg",
+  ];
 
-  const [destination, setDestination] = useState("")
-  const [departure, setDeparture] = useState("Ho Chi Minh City")
-  const [date, setDate] = useState(null)
-
-  const handleGetStarted = () => {
-    navigate(user ? "/tours" : "/auth/login")
-  }
-
-  const formatDate = (d) => {
-    if (!d) return ""
-    const dt = d instanceof Date ? d : new Date(d)
-    const yyyy = dt.getFullYear()
-    const mm = String(dt.getMonth() + 1).padStart(2, "0")
-    const dd = String(dt.getDate()).padStart(2, "0")
-    return `${yyyy}-${mm}-${dd}`
-  }
-
-  const handleSearch = () => {
-    if (!destination.trim()) return
-
-    const params = new URLSearchParams({
-      keyword: destination,
-      departure,
-      from: date ? formatDate(date) : "",
-    }).toString()
-
-    navigate(`/tours?${params}`)
-  }
-
-  // Categories Data (Translated)
-  const categories = [
-    { name: "Beaches", icon: Umbrella, count: "120+ Tours", color: "text-blue-500", bg: "bg-blue-50" },
-    { name: "Mountains", icon: MapPin, count: "80+ Tours", color: "text-emerald-500", bg: "bg-emerald-50" },
-    { name: "City", icon: Globe, count: "200+ Tours", color: "text-violet-500", bg: "bg-violet-50" },
-    { name: "Culture", icon: Camera, count: "50+ Tours", color: "text-amber-500", bg: "bg-amber-50" },
-    { name: "Food", icon: Coffee, count: "40+ Tours", color: "text-rose-500", bg: "bg-rose-50" },
-  ]
-
-  // Destinations Data (Translated names where applicable)
-  const popularDestinations = [
-    { name: "Ha Long Bay", tours: 25, image: "/images/destination1.jpg", colSpan: "md:col-span-2 md:row-span-2", height: "h-64 md:h-full" },
-    { name: "Hoi An", tours: 18, image: "/images/destination5.jpg", colSpan: "md:col-span-1 md:row-span-1", height: "h-64" },
-    { name: "Phu Quoc", tours: 30, image: "/images/destination2.jpg", colSpan: "md:col-span-1 md:row-span-1", height: "h-64" },
-    { name: "Da Nang", tours: 22, image: "/images/destination3.jpg", colSpan: "md:col-span-2 md:row-span-1", height: "h-64" },
-  ]
-
-  // Testimonials Data (Translated)
-  const testimonials = [
-    { name: "Alice Nguyen", role: "Traveler", text: "The trip to Ha Long Bay was amazing. Everything was organized very professionally!", avatar: "A" },
-    { name: "Minh Tran", role: "Photographer", text: "Enthusiastic guides, excellent scenery. I took some photos of a lifetime.", avatar: "M" },
-    { name: "Sarah Pham", role: "Family Trip", text: "My family loved the Phu Quoc tour. Great service, reasonable price.", avatar: "S" },
-  ]
+  const swingImages = [
+    "/images/swing1.jpg",
+    "/images/swing2.jpg",
+    "/images/swing3.jpg",
+    "/images/swing4.jpg",
+  ];
 
   return (
     <div className="font-sans text-slate-800 bg-slate-50">
-
+      <Header />
       {/* ================= HERO SECTION (Bright Overlay) ================= */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section
+        id="hero"
+        className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+      >
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center z-0 transition-transform duration-1000 scale-105"
-          style={{ backgroundImage: "url('/images/destination1.jpg')" }}
+          className="absolute inset-0 bg-cover bg-center z-0 transition-transform duration-1"
+          style={{ backgroundImage: "url('/backgrounds/KYTbackground.jpg')" }}
         ></div>
+      </section>
 
-        {/* Overlay: Blending Blue (Navbar) downwards */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/40 via-black/20 to-slate-900/60 z-10"></div>
+      {/* ================= KYT section ================= */}
+      <section id="kyt" className="relative w-full">
+        {/* nền tối + hiệu ứng chuyển */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950" />
 
-        {/* Hero Content */}
-        <div className="relative z-20 container mx-auto px-4 text-center mt-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-semibold mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700 shadow-lg">
-            <Zap className="w-4 h-4 text-yellow-300" /> Explore the world your way
+        <div className="relative w-full px-4 md:px-10 lg:px-14 py-14">
+          {/* Title */}
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              Về Khúc Yêu Thương
+            </h2>
+            <p className="text-slate-300 mt-2">
+              Những khoảnh khắc đáng nhớ của chương trình
+            </p>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 drop-shadow-lg">
-            Travel <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">Without Limits</span>
+          {/* Layout: card trái + carousel phải */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* CARD THÔNG TIN (giống ảnh mẫu) */}
+            <div className="lg:col-span-4">
+              <div className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl overflow-hidden">
+                {/* header nhỏ */}
+                <div className="px-6 py-5 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 border-b border-white/10">
+                  <p className="text-white/90 font-semibold">Khúc yêu thương</p>
+                  <p className="text-white/60 text-sm mt-1">
+                    Chương trình thiện nguyện & đêm nhạc gây quỹ
+                  </p>
+                </div>
+
+                {/* body */}
+                <div className="px-6 py-5 text-slate-100">
+                  <p className="leading-relaxed text-[15px] text-slate-100/90">
+                    "Khúc Yêu Thương 2025" là chương trình tình nguyện thường
+                    niên và đặc sắc nhất của CLB Guitar DUE. Không chỉ mang lại
+                    không khí sôi động của một đêm nhạc hoành tráng, chương
+                    trình còn lan tỏa hạnh phúc, chia sẻ yêu thương đến các em ở
+                    vùng cao, vùng xa.
+                  </p>
+
+                  <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
+                    <div className="rounded-xl bg-white/10 border border-white/10 p-3">
+                      <p className="text-white/60">Thời gian</p>
+                      <p className="font-semibold text-white">
+                        19:00 • 11/05/2025
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white/10 border border-white/10 p-3">
+                      <p className="text-white/60">Địa điểm</p>
+                      <p className="font-semibold text-white">
+                        Trường ĐH Kinh Tế, ĐH Đà Nẵng
+                      </p>
+                    </div>
+                  </div>
+
+                  <button className="mt-6 w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 transition text-white font-semibold py-3">
+                    Xem chi tiết chương trình
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* CAROUSEL TRÀN VIỀN */}
+            <div className="lg:col-span-8">
+              {/* Khung tràn viền: bỏ container, full width trong section */}
+              <div className="w-full">
+                <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                  <ImageCarousel
+                    images={galleryImages}
+                    height="h-[340px] md:h-[480px]"
+                    interval={3500}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CLB GUITAR DUE ================= */}
+      <section
+        id="clb"
+        className="relative min-h-[90vh] flex justify-center overflow-hidden"
+      >
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/kk4.jpg')" }}
+        />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/50 to-slate-900/90" />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center text-center px-4 pt-24 md:pt-32">
+          {/* Title */}
+          <h1 className="text-white font-extrabold text-3xl md:text-5xl lg:text-6xl tracking-wide drop-shadow-lg">
+            CLB GUITAR DUE
           </h1>
 
-          <p className="text-lg md:text-xl text-blue-50 max-w-2xl mx-auto mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 drop-shadow-md">
-            Book all-inclusive tours, hotels, and flights at the best prices. Experience new lands with us.
+          {/* Slogan */}
+          <p className="mt-4 text-slate-200 text-base md:text-lg italic drop-shadow">
+            “Guitar – Kết nối đam mê”
           </p>
 
-          {/* Search Box */}
-          {/* <div className="bg-white/20 backdrop-blur-lg border border-white/30 p-2 md:p-3 rounded-3xl shadow-2xl max-w-5xl mx-auto animate-in fade-in zoom-in-95 duration-1000 delay-300">
-            <TourSearchBar
-              destination={destination}
-              setDestination={setDestination}
-              departure={departure}
-              setDeparture={setDeparture}
-              date={date}
-              setDate={setDate}
-              onSearch={handleSearch}
-            />
-          </div> */}
+          {/* Description Card */}
+          <div className="mt-10 max-w-4xl rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl px-6 md:px-10 py-6 md:py-8">
+            <p className="text-slate-100/90 text-sm md:text-base leading-relaxed">
+              Câu lạc bộ Guitar Đại học Kinh tế – Đại học Đà Nẵng (Guitar DUE)
+              là tổ chức sinh viên trực thuộc Đoàn TNCS Hồ Chí Minh Trường Đại
+              học Kinh tế – Đại học Đà Nẵng, được thành lập vào ngày 20 tháng 11
+              năm 2006. Với sứ mệnh kết nối và phát triển đam mê âm nhạc, Guitar
+              DUE đã trở thành mái nhà chung cho những sinh viên yêu thích
+              guitar và âm nhạc. Qua hơn một thập kỷ hoạt động, câu lạc bộ không
+              chỉ tổ chức các buổi biểu diễn, workshop, chương trình giao lưu âm
+              nhạc mà còn góp phần tạo nên những khoảnh khắc đáng nhớ cho cộng
+              đồng sinh viên.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ================= CATEGORIES SECTION ================= */}
-      <section className="py-20 container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-900">Popular Categories</h2>
-          <p className="text-slate-500 mt-2">Choose your favorite travel style</p>
-        </div>
+      {/* ================= Swing band ================= */}
+      <section id="swing" className="relative w-full">
+        {/* nền tối + hiệu ứng chuyển */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950" />
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-          {categories.map((cat, idx) => (
-            <div
-              key={idx}
-              className="group cursor-pointer bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-cyan-100 hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center"
-              onClick={() => navigate(`/tours?category=${cat.name}`)}
-            >
-              <div className={`w-16 h-16 rounded-full ${cat.bg} ${cat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                <cat.icon className="w-8 h-8" />
-              </div>
-              <h3 className="font-bold text-lg text-slate-800 mb-1 group-hover:text-blue-600 transition-colors">{cat.name}</h3>
-              <p className="text-xs text-slate-400 font-medium">{cat.count}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ================= FEATURED TOURS ================= */}
-      <div className="bg-white py-10">
-        <FeaturedTours />
-      </div>
-
-      {/* ================= POPULAR DESTINATIONS ================= */}
-      <section className="py-20 bg-slate-50">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Top Destinations</h2>
-              <p className="text-slate-500 mt-2">Most loved destinations by travelers this year</p>
-            </div>
-            <button onClick={() => navigate('/destinations')} className="text-cyan-600 font-semibold hover:text-blue-600 transition-colors flex items-center gap-1 mt-4 md:mt-0">
-              View all <ArrowRight className="w-4 h-4" />
-            </button>
+        <div className="relative w-full px-4 md:px-10 lg:px-14 py-14">
+          {/* Title */}
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              Swing Band
+            </h2>
+            <p className="text-slate-300 mt-2">Linh hồn của Khúc Yêu Thương</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-fr">
-            {popularDestinations.map((dest, idx) => (
-              <div
-                key={idx}
-                className={`relative rounded-3xl overflow-hidden group cursor-pointer ${dest.colSpan} ${dest.height}`}
-                onClick={() => navigate(`/tours?keyword=${dest.name}`)}
-              >
-                <img
-                  src={dest.image}
-                  alt={dest.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                {/* Overlay gradient Bright Ocean when hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
-                <div className="absolute bottom-0 left-0 p-6 w-full">
-                  <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">{dest.name}</h3>
-                  <p className="text-blue-50 text-sm flex items-center gap-1">
-                    <MapPin className="w-3 h-3" /> {dest.tours} Tours
+          {/* Layout: card trái + carousel phải */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* CARD THÔNG TIN (giống ảnh mẫu) */}
+            <div className="lg:col-span-4">
+              <div className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl overflow-hidden">
+                {/* header nhỏ */}
+                <div className="px-6 py-5 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 border-b border-white/10">
+                  <p className="text-white/90 font-semibold">Swing Band</p>
+                  <p className="text-white/60 text-sm mt-1">
+                    Band nhạc Vip pro số 1 Đà Nẵng
+                  </p>
+                </div>
+
+                {/* body */}
+                <div className="px-6 py-5 text-slate-100">
+                  <p className="leading-relaxed text-[15px] text-slate-100/90">
+                    Trong thế giới âm nhạc rộn ràng và đầy sắc màu, Swing luôn
+                    mang đến một nhịp điệu rất riêng – vừa hoài niệm, vừa phóng
+                    khoáng, vừa khiến người nghe không thể đứng yên. Đến với
+                    chương trình hôm nay, chúng ta hãy cùng chào đón [Tên Band]
+                    – một ban nhạc theo đuổi dòng nhạc Swing với tinh thần trẻ
+                    trung, sáng tạo nhưng vẫn giữ trọn cái “chất” cổ điển đầy
+                    cuốn hút. Những giai điệu jazz swing, blues hay retro quen
+                    thuộc sẽ được band thổi vào một làn gió mới, đưa khán giả
+                    quay về không khí sôi động, lãng mạn của những thập niên
+                    vàng son. Âm nhạc của [Tên Band] không chỉ để lắng nghe, mà
+                    còn để cảm nhận, để nhún nhảy theo từng nhịp trống, từng
+                    tiếng guitar và những giai điệu đầy ngẫu hứng. Ngay bây giờ,
+                    xin mời tất cả chúng ta hãy dành một tràng pháo tay thật
+                    nồng nhiệt để chào đón [Tên Band] – và cùng bước vào không
+                    gian Swing đầy mê hoặc!
                   </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= WHY CHOOSE US ================= */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2">
-              <span className="text-cyan-600 font-bold tracking-wider text-sm uppercase mb-2 block">Why Choose Us?</span>
-              <h2 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">Delivering The Perfect <br />Travel Experience</h2>
-              <p className="text-slate-600 mb-8 leading-relaxed">
-                We are committed to providing memorable trips with high quality service, transparent pricing, and 24/7 dedicated support.
-              </p>
-
-              <div className="space-y-6">
-                {[
-                  { icon: Award, title: "Best Price", desc: "Committed to the most competitive prices in the market", color: "bg-blue-100 text-blue-600" },
-                  { icon: Users, title: "Professional Guides", desc: "Knowledgeable and enthusiastic guide team", color: "bg-cyan-100 text-cyan-600" },
-                  { icon: Star, title: "5-Star Service", desc: "Thousands of positive reviews from customers", color: "bg-amber-100 text-amber-600" },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className={`w-12 h-12 rounded-2xl ${item.color} flex items-center justify-center flex-shrink-0`}>
-                      <item.icon className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
-                      <p className="text-slate-500 text-sm mt-1">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
 
-            <div className="lg:w-1/2 relative">
-              <div className="absolute -top-10 -right-10 w-72 h-72 bg-blue-200 rounded-full blur-3xl opacity-40"></div>
-              <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-cyan-200 rounded-full blur-3xl opacity-40"></div>
-
-              <div className="relative grid grid-cols-2 gap-4">
-                <img src="/images/destination2.jpg" alt="Experience" className="rounded-3xl shadow-2xl w-full h-72 object-cover translate-y-8" />
-                <img src="/images/destination3.jpg" alt="Experience" className="rounded-3xl shadow-2xl w-full h-72 object-cover" />
+            {/* CAROUSEL TRÀN VIỀN */}
+            <div className="lg:col-span-8">
+              {/* Khung tràn viền: bỏ container, full width trong section */}
+              <div className="w-full">
+                <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                  <ImageCarousel images={swingImages} interval={3500} />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* ================= TESTIMONIALS ================= */}
-      <section className="py-24 bg-slate-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900">What Customers Say?</h2>
-            <p className="text-slate-500 mt-2">Real feedback from those who have experienced it</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((item, idx) => (
-              <div key={idx} className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-lg hover:shadow-blue-900/5 transition-all border border-slate-100 relative">
-                <Quote className="w-10 h-10 text-blue-100 absolute top-6 right-6" />
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center font-bold text-white text-lg shadow-md">
-                    {item.avatar}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">{item.name}</h4>
-                    <p className="text-sm text-cyan-600 font-medium">{item.role}</p>
-                  </div>
-                </div>
-                <p className="text-slate-600 italic leading-relaxed">"{item.text}"</p>
-                <div className="flex gap-1 mt-6 text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= CTA SECTION (White Background) ================= */}
-      <section className="py-24 relative overflow-hidden bg-white">
-        {/* Light gray dot background pattern */}
-        <div className="absolute inset-0 opacity-40"
-          style={{ backgroundImage: 'radial-gradient(circle, #e2e8f0 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">Ready for your next trip?</h2>
-          <p className="text-slate-600 text-lg mb-10 max-w-2xl mx-auto">
-            Subscribe to our newsletter so you don't miss out on exclusive offers and exciting travel tips every week.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto mb-10">
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className="px-6 py-4 rounded-xl flex-1 outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 shadow-sm border border-slate-200 placeholder:text-slate-400 bg-slate-50 focus:bg-white"
-            />
-            {/* Gradient button stands out on white background */}
-            <button className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-cyan-500/30 transition-all whitespace-nowrap">
-              Subscribe Now
-            </button>
-          </div>
-
-          <button
-            onClick={handleGetStarted}
-            className="text-blue-600 border-b border-blue-200 pb-1 hover:text-cyan-600 hover:border-cyan-600 transition text-sm font-medium inline-flex items-center gap-2"
-          >
-            Or start exploring now <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      </section>
+      <Footer />
     </div>
-  )
+  );
 }
