@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -68,7 +69,7 @@ export default function Header() {
           </span>
         </Link>
 
-        <div className="md:flex flex-1 justify-center gap-4">
+        <div className="hidden md:flex flex-1 justify-center gap-4">
           <button
             onClick={() => scrollToSection("hero")}
             className={getLinkClass("")}
@@ -109,25 +110,65 @@ export default function Header() {
             Tra cứu vé
           </Link>
         </div>
+
+        {/* MOBILE MENU BUTTON */}
+        <button
+          className="md:hidden text-white"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
 
       {/* =========================================
         MOBILE MENU
       ========================================= */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-slate-100 shadow-xl absolute w-full left-0 top-20 animate-in slide-in-from-top-5">
+        <div className="md:hidden bg-white shadow-xl absolute w-full left-0 top-20 animate-in slide-in-from-top-5">
           <div className="p-4 space-y-2">
+            {/* Scroll sections */}
+            <button
+              onClick={() => scrollToSection("hero")}
+              className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-100 text-slate-700 font-medium"
+            >
+              KYT 2026
+            </button>
+
+            <button
+              onClick={() => scrollToSection("clb")}
+              className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-100 text-slate-700 font-medium"
+            >
+              CLB Guitar DUE
+            </button>
+
+            <button
+              onClick={() => scrollToSection("swing")}
+              className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-100 text-slate-700 font-medium"
+            >
+              Swing Band
+            </button>
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-100 text-slate-700 font-medium"
+            >
+              Liên hệ
+            </button>
+
+            <hr />
+
+            {/* Routes */}
             <Link
-              to="/"
+              to="/datve"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-700 font-medium"
+              className="block px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold text-center"
             >
               Đặt vé ngay
             </Link>
+
             <Link
-              to="/tours"
+              to="/tracuu"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-700 font-medium"
+              className="block px-4 py-3 rounded-xl border border-blue-600 text-blue-600 font-semibold text-center"
             >
               Tra cứu vé
             </Link>
