@@ -18,7 +18,7 @@ export default function DatVe() {
 
   /* ---------------- FETCH SEATS ---------------- */
   useEffect(() => {
-    fetch("http://localhost:3001/api/seats")
+    fetch(`${import.meta.env.VITE_API_URL}/api/seats`)
       .then((res) => res.json())
       .then((data) => setSeats(data))
       .catch(() => setSeats([]));
@@ -27,7 +27,7 @@ export default function DatVe() {
   /* ---------------- FETCH USERS (WHEN NEEDED) ---------------- */
   useEffect(() => {
     if (hasReferral === "yes") {
-      fetch("http://localhost:3001/api/users")
+      fetch(`${import.meta.env.VITE_API_URL}/api/users`)
         .then((res) => res.json())
         .then((data) => setUsers(data))
         .catch(() => setUsers([]));
