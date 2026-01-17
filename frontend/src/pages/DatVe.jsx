@@ -1,9 +1,57 @@
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { User, Phone, Mail, MapPin, Ticket } from "lucide-react";
+import { FaFacebook } from "react-icons/fa";
 import Header from "@/components/layout/Header";
 
+const MAX_SEATS = 10;
+const PRICE = 50000;
+
 export default function DatVe() {
+  const [seats, setSeats] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [hasReferral, setHasReferral] = useState(""); // "yes" | "no"
+  const [users, setUsers] = useState([]);
+  const [referrerId, setReferrerId] = useState("");
+
+  /* ---------------- FETCH SEATS ---------------- */
+  useEffect(() => {
+    fetch("http://localhost:3001/api/seats")
+      .then((res) => res.json())
+      .then((data) => setSeats(data))
+      .catch(() => setSeats([]));
+  }, []);
+
+  /* ---------------- FETCH USERS (WHEN NEEDED) ---------------- */
+  useEffect(() => {
+    if (hasReferral === "yes") {
+      fetch("http://localhost:3001/api/users")
+        .then((res) => res.json())
+        .then((data) => setUsers(data))
+        .catch(() => setUsers([]));
+    }
+  }, [hasReferral]);
+
+  /* ---------------- TOGGLE SEAT ---------------- */
+  const toggleSeat = (seat) => {
+    if (seat.status === "SOLD") return;
+
+    if (selectedSeats.includes(seat.seatCode)) {
+      setSelectedSeats(selectedSeats.filter((s) => s !== seat.seatCode));
+    } else {
+      if (selectedSeats.length >= MAX_SEATS) return;
+      setSelectedSeats([...selectedSeats, seat.seatCode]);
+    }
+  };
+
+  const totalPrice = selectedSeats.length * PRICE;
+
   return (
     <div className="relative min-h-screen text-white">
       <Header />
+
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -11,90 +59,223 @@ export default function DatVe() {
       />
       <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" />
 
-      {/* Content */}
       <div className="relative z-10 container mx-auto px-6 py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* ================= LEFT – SEAT MAP ================= */}
-          <div className="lg:col-span-7">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* ================= SEAT MAP ================= */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="lg:col-span-7"
+          >
             <h2 className="text-xl font-semibold mb-4 text-center">
-              Sơ đồ ghế ngồi đêm nhạc “Khúc Yêu Thương 2026”
+              Sơ đồ ghế – “Khúc Yêu Thương 2026”
             </h2>
 
             <div className="bg-white/10 rounded-2xl p-6 shadow-xl">
-              {/* Stage */}
               <div className="flex justify-center mb-6">
-                <div className="bg-white text-slate-800 font-bold px-12 py-6 rounded-lg">
+                <div className="bg-white text-slate-800 font-bold px-20 py-4 rounded-xl shadow">
                   STAGE
                 </div>
               </div>
 
-              {/* Seat grid (demo) */}
               <div className="grid grid-cols-[repeat(14,1fr)] gap-1 justify-center">
-                {Array.from({ length: 14 * 14 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-5 h-5 rounded-sm bg-green-500 hover:bg-cyan-400 cursor-pointer"
-                  />
-                ))}
-              </div>
+                {seats.map((seat) => {
+                  const isSelected = selectedSeats.includes(seat.seatCode);
+                  const isSold = seat.status === "SOLD";
 
-              {/* Legend */}
-              <div className="flex gap-6 mt-6 text-sm justify-center">
-                <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 bg-gray-300 block rounded" />
-                  Đã đặt
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 bg-green-500 block rounded" />
-                  Có thể chọn
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 bg-cyan-400 block rounded" />
-                  Đang chọn
-                </div>
+                  return (
+                    <motion.div
+                      key={seat.seatCode}
+                      whileHover={!isSold ? { scale: 1.15 } : undefined}
+                      whileTap={!isSold ? { scale: 0.9 } : undefined}
+                      animate={{ scale: isSelected ? 1.2 : 1 }}
+                      style={{
+                        backgroundColor: isSold
+                          ? "#475569"
+                          : isSelected
+                          ? "#22d3ee"
+                          : "#22c55e",
+                      }}
+                      onClick={() => toggleSeat(seat)}
+                      className={`
+                        w-7 h-7 rounded text-[9px] font-semibold
+                        flex items-center justify-center
+                        text-slate-900
+                        ${
+                          isSold
+                            ? "cursor-not-allowed opacity-60"
+                            : "cursor-pointer"
+                        }
+                      `}
+                    >
+                      {seat.seatCode}
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
-          </div>
 
-          {/* ================= RIGHT – INFO + FORM ================= */}
+            <div className="flex justify-center gap-6 mt-4 text-sm">
+              <Legend color="bg-green-500" label="Còn trống" />
+              <Legend color="bg-cyan-400" label="Đang chọn" />
+              <Legend color="bg-slate-600" label="Đã bán" />
+            </div>
+          </motion.div>
+
+          {/* ================= FORM ================= */}
           <div className="lg:col-span-5 space-y-6">
-            {/* Event info */}
             <div className="bg-white/10 rounded-2xl p-6 shadow-xl">
               <h3 className="text-lg font-bold mb-4">
-                Đêm nhạc gây quỹ
-                <br />
-                “Khúc Yêu Thương 2026”
+                Đêm nhạc “Khúc Yêu Thương 2026”
               </h3>
-              <ul className="space-y-2 text-sm text-slate-200">
-                <li>🕖 17h30 – 22h00 | 17/01/2026</li>
-                <li>📍 Nhà thi đấu – ĐH Đà Nẵng</li>
-                <li>🎫 50.000 VNĐ / vé</li>
-              </ul>
+              <p>🕖 17h30 – 22h00 | 17/01/2026</p>
+              <p>📍 Nhà thi đấu – ĐH Đà Nẵng</p>
+              <p>🎫 50.000 VNĐ / vé</p>
             </div>
 
-            {/* Booking form */}
-            <div className="bg-white/10 rounded-2xl p-6 shadow-xl">
-              <h3 className="text-lg font-semibold mb-4">Thông tin đặt vé</h3>
+            <div className="bg-gradient-to-b from-white/20 to-white/5 rounded-3xl p-8 shadow-2xl">
+              <h3 className="text-xl font-bold text-center mb-6">
+                Thông tin đặt vé
+              </h3>
 
-              <div className="space-y-4 text-sm">
-                <input className="input" placeholder="Họ và tên" />
-                <input className="input" placeholder="Số điện thoại" />
-                <input className="input" placeholder="Email" />
-                <input className="input" placeholder="Địa chỉ nhận vé" />
-                <input
-                  className="input bg-slate-700"
-                  placeholder="Vị trí đã chọn"
-                  disabled
-                />
+              <FormRow icon={<User />} label="Họ và tên*" />
+              <FormRow icon={<Phone />} label="Số điện thoại*" />
+              <FormRow icon={<Mail />} label="Email*" />
+              <FormRow icon={<MapPin />} label="Địa chỉ nhận*" note />
+              <FormRow icon={<FaFacebook />} label="Link Facebook*" />
+
+              {/* Referral select */}
+              <div className="mb-4">
+                <div className="flex items-center gap-3">
+                  <User />
+                  <label className="w-32 text-sm">
+                    Bạn có được bạn bè giới thiệu?*
+                  </label>
+                  <select
+                    value={hasReferral}
+                    onChange={(e) => {
+                      setHasReferral(e.target.value);
+                      setReferrerId("");
+                    }}
+                    className="flex-1 rounded-xl px-4 py-3 text-slate-800"
+                  >
+                    <option value="">-- Chọn --</option>
+                    <option value="no">Không</option>
+                    <option value="yes">Có</option>
+                  </select>
+                </div>
               </div>
 
-              <button className="mt-6 w-full bg-cyan-500 hover:bg-cyan-400 transition rounded-xl py-3 font-semibold">
-                Thanh toán
+              {/* Referrer select (conditional) */}
+              {hasReferral === "yes" && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-3">
+                    <User />
+                    <label className="w-32 text-sm">Bạn bè giới thiệu*</label>
+                    <select
+                      value={referrerId}
+                      onChange={(e) => setReferrerId(e.target.value)}
+                      className="flex-1 rounded-xl px-4 py-3 text-slate-800"
+                    >
+                      <option value="">-- Chọn bạn --</option>
+                      {users.map((u) => (
+                        <option key={u.userID} value={u.userID}>
+                          {u.userName} ({u.team})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              <FormRow
+                icon={<Ticket />}
+                label="Vị trí đã chọn"
+                value={selectedSeats.join(", ")}
+                disabled
+                placeholder="Chọn ghế trực tiếp trên sơ đồ"
+              />
+
+              <button
+                disabled={selectedSeats.length === 0}
+                onClick={() => setShowConfirm(true)}
+                className="mt-6 w-full bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-600 rounded-2xl py-4 font-bold text-lg"
+              >
+                Thanh toán ({totalPrice.toLocaleString()} VNĐ)
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ================= CONFIRM ================= */}
+      <AnimatePresence>
+        {showConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="bg-slate-900 rounded-2xl p-8 w-[400px]"
+            >
+              <h3 className="text-lg font-bold mb-4">Xác nhận thanh toán</h3>
+              <p>Ghế: {selectedSeats.join(", ")}</p>
+              <p className="mt-2 font-semibold">
+                Tổng tiền: {totalPrice.toLocaleString()} VNĐ
+              </p>
+
+              <div className="flex gap-4 mt-6">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 bg-slate-600 rounded-xl py-2"
+                >
+                  Hủy
+                </button>
+                <button className="flex-1 bg-cyan-500 rounded-xl py-2 font-bold">
+                  Xác nhận
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ---------- COMPONENTS ---------- */
+function FormRow({ icon, label, value, disabled, placeholder, note }) {
+  return (
+    <div className="mb-4">
+      <div className="flex items-center gap-3">
+        <div>{icon}</div>
+        <label className="w-32 text-sm">{label}</label>
+        <input
+          value={value}
+          disabled={disabled}
+          placeholder={placeholder}
+          className="flex-1 rounded-xl px-4 py-3 text-slate-800"
+        />
+      </div>
+
+      {note && (
+        <p className="text-xs italic text-slate-300 ml-[56px] mt-1">
+          * Vé sẽ được gửi bản cứng và online qua email
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Legend({ color, label }) {
+  return (
+    <div className="flex items-center gap-2">
+      <div className={`w-4 h-4 rounded ${color}`} />
+      {label}
     </div>
   );
 }
